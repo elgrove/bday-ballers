@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bday Ballers — Tactics Board</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Caveat:wght@500;700&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --board: #1f3a2c;
+      --board-dark: #16291f;
+      --chalk: #f0e9d9;
+      --chalk-soft: rgba(240, 233, 217, 0.66);
+      --chalk-yellow: #f0c64e;
+      --chalk-red: #e07060;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--board); color: var(--chalk); font-family: 'Caveat', cursive; }
+    body {
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255,255,255,0.05), transparent 28%),
+        radial-gradient(circle at 82% 80%, rgba(255,255,255,0.04), transparent 30%),
+        repeating-linear-gradient(48deg, rgba(255,255,255,0.012) 0 2px, transparent 2px 5px),
+        var(--board);
+      min-height: 100vh;
+      padding: 32px 24px 80px;
+    }
+    /* Pitch markings */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 16px;
+      pointer-events: none;
+      border: 2px solid var(--chalk-soft);
+      border-radius: 4px;
+      opacity: 0.35;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 240px;
+      height: 240px;
+      transform: translate(-50%, -50%);
+      border: 2px solid var(--chalk-soft);
+      border-radius: 50%;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    main { max-width: 880px; margin: 0 auto; position: relative; z-index: 1; }
+
+    h1 {
+      font-family: 'Permanent Marker', cursive;
+      font-size: clamp(56px, 11vw, 110px);
+      letter-spacing: 0.01em;
+      margin: 0;
+      line-height: 0.92;
+      text-shadow: 0 0 1px var(--chalk);
+      transform: rotate(-1.5deg);
+      display: inline-block;
+    }
+    h1 .ballers { color: var(--chalk-yellow); }
+    h1 .dot { color: var(--chalk-red); }
+
+    .tagline {
+      font-family: 'Special Elite', 'Caveat', cursive;
+      font-size: 17px;
+      margin-top: 18px;
+      color: var(--chalk-soft);
+      max-width: 580px;
+      line-height: 1.45;
+    }
+
+    .formula {
+      margin: 36px 0 18px;
+      padding: 12px 0;
+      border-top: 1px dashed var(--chalk-soft);
+      border-bottom: 1px dashed var(--chalk-soft);
+      font-family: 'Special Elite', monospace;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--chalk-soft);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    form { display: flex; gap: 14px; align-items: end; flex-wrap: wrap; margin-bottom: 36px; }
+    label {
+      font-family: 'Special Elite', monospace;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--chalk-soft);
+      display: block;
+      margin-bottom: 6px;
+    }
+    input[type=date] {
+      background: transparent;
+      border: none;
+      border-bottom: 2px dashed var(--chalk);
+      color: var(--chalk);
+      font-family: 'Permanent Marker', cursive;
+      font-size: 30px;
+      padding: 2px 8px;
+      letter-spacing: 0.02em;
+    }
+    input[type=date]::-webkit-calendar-picker-indicator {
+      filter: invert(1) opacity(0.6);
+      cursor: pointer;
+    }
+    button {
+      background: transparent;
+      border: 2px dashed var(--chalk-yellow);
+      color: var(--chalk-yellow);
+      font-family: 'Permanent Marker', cursive;
+      font-size: 22px;
+      padding: 8px 22px;
+      cursor: pointer;
+      transform: rotate(-1deg);
+      transition: transform 100ms ease;
+    }
+    button:hover { transform: rotate(-2deg) scale(1.04); }
+
+    .board { position: relative; }
+    .row {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 18px;
+      align-items: baseline;
+      padding: 16px 4px;
+      border-bottom: 1px dashed var(--chalk-soft);
+      opacity: 0;
+      transform: translateX(-12px);
+      animation: chalkin 360ms ease forwards;
+    }
+    @keyframes chalkin { to { opacity: 1; transform: none; } }
+
+    .rank {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 48px;
+      color: var(--chalk-yellow);
+      text-align: center;
+      line-height: 1;
+    }
+    .row.same .rank { color: var(--chalk-red); }
+    .name {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 30px;
+      letter-spacing: 0.01em;
+      line-height: 1.1;
+      margin: 0 0 4px;
+      text-decoration-thickness: 2px;
+    }
+    .name a { color: var(--chalk); text-decoration: underline wavy var(--chalk-soft); text-underline-offset: 4px; }
+    .annot {
+      font-family: 'Caveat', cursive;
+      font-size: 20px;
+      color: var(--chalk-soft);
+    }
+    .annot .pill {
+      display: inline-block;
+      padding: 0 8px;
+      margin: 0 4px;
+      border: 1px solid var(--chalk-soft);
+      border-radius: 14px;
+    }
+    .arrow {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 26px;
+      color: var(--chalk-yellow);
+      text-align: right;
+      line-height: 1.1;
+    }
+    .arrow .n { font-size: 38px; display: block; }
+    .row.same .arrow .n { color: var(--chalk-red); }
+    .arrow .word {
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      color: var(--chalk-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .skeleton {
+      padding: 20px 4px;
+      font-family: 'Caveat', cursive;
+      color: var(--chalk-soft);
+      font-size: 22px;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 48px;
+      font-family: 'Special Elite', monospace;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--chalk-soft);
+      text-decoration: underline wavy var(--chalk-soft);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1><span>Bday</span> <span class="ballers">Ballers</span><span class="dot">.</span></h1>
+    <p class="tagline">Clapped-out? Cooked? Finished at the top level?<br>Turns out he's the same age as you.</p>
+
+    <div class="formula"><span>Match report — born around the same time</span><span>Ranked by notability</span></div>
+
+    <form id="f">
+      <div>
+        <label for="dob">Your date of birth</label>
+        <input type="date" id="dob" value="1991-07-02" required>
+      </div>
+      <button type="submit">Run the tape →</button>
+    </form>
+
+    <section class="board" id="board"><p class="skeleton">Chalking the team sheet…</p></section>
+
+    <a class="back" href="/designs/">← back to variants</a>
+  </main>
+
+  <script>
+    const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    function fmtDate(iso) { const [y,m,d] = iso.split('-'); return `${parseInt(d,10)} ${MONTHS[parseInt(m,10)-1]} ${y}`; }
+    function fmtMoney(v) { if (v == null) return null; if (v >= 1e6) return `€${(v/1e6).toFixed(v >= 1e7 ? 0 : 1)}m`; if (v >= 1e3) return `€${Math.round(v/1e3)}k`; return `€${v}`; }
+    function tag(n, attrs={}, ...kids) { const e = document.createElement(n); for (const [k,v] of Object.entries(attrs)) { if (k==='class') e.className=v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v===true) e.setAttribute(k,''); else if (v!=null && v!==false) e.setAttribute(k, v); } for (const k of kids.flat()) { if (k==null || k===false) continue; e.append(k instanceof Node ? k : document.createTextNode(String(k))); } return e; }
+
+    const f = document.getElementById('f');
+    const dobEl = document.getElementById('dob');
+    const board = document.getElementById('board');
+
+    async function render(dob) {
+      board.innerHTML = '<p class="skeleton">Chalking the team sheet…</p>';
+      const r = await fetch('/api/players?dob=' + dob + '&limit=10');
+      const json = await r.json();
+      const userDate = new Date(dob + 'T00:00:00Z');
+      board.innerHTML = '';
+      json.results.forEach((p, i) => {
+        const pd = new Date(p.date_of_birth + 'T00:00:00Z');
+        const signed = Math.round((pd - userDate) / 86_400_000);
+        const abs = Math.abs(signed);
+        const same = signed === 0;
+        const wordy = same ? 'same day' : (signed > 0 ? 'younger' : 'older');
+
+        const annotBits = [];
+        annotBits.push(fmtDate(p.date_of_birth));
+        if (p.current_club) annotBits.push('→ ' + p.current_club);
+        if (p.national_team) annotBits.push(tag('span', {class:'pill'}, `${p.national_team} · ${p.caps ?? 0}c`));
+        if (p.peak_market_value_eur) annotBits.push(tag('span', {class:'pill'}, `peak ${fmtMoney(p.peak_market_value_eur)}`));
+
+        const row = tag('article', { class: 'row' + (same ? ' same' : ''), style: `animation-delay: ${i*55}ms` },
+          tag('div', {class:'rank'}, String(i+1).padStart(2,'0')),
+          tag('div', {},
+            tag('h2', {class:'name'}, p.profile_url
+              ? tag('a', {href: p.profile_url, target:'_blank', rel:'noopener'}, p.name)
+              : p.name),
+            tag('div', {class:'annot'}, ...annotBits.flatMap((b,i) => i===0 ? [b] : [' · ', b])),
+          ),
+          tag('div', {class:'arrow'},
+            same ? null : tag('span', {class:'n'}, String(abs)),
+            tag('span', {class:'word'}, wordy === 'same day' ? 'same day' : `days ${wordy}`),
+          ),
+        );
+        board.append(row);
+      });
+    }
+
+    f.addEventListener('submit', (e) => { e.preventDefault(); render(dobEl.value); });
+    render(dobEl.value);
+  </script>
+</body>
+</html>

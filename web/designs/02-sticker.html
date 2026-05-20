@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bday Ballers — Sticker Album</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f6efe1;
+      --paper-deep: #ecdfc6;
+      --ink: #14110d;
+      --pop1: #ee2546;
+      --pop2: #1f7bf0;
+      --pop3: #f4b223;
+      --pop4: #1aa55f;
+      --pop5: #6d3fce;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); font-family: 'Space Grotesk', system-ui, sans-serif; }
+    body {
+      background:
+        radial-gradient(circle at 80% 0%, rgba(244,178,35,0.18), transparent 38%),
+        radial-gradient(circle at 0% 100%, rgba(31,123,240,0.12), transparent 40%),
+        var(--paper);
+      min-height: 100vh;
+      padding: 56px 24px 90px;
+    }
+    main { max-width: 980px; margin: 0 auto; }
+
+    h1 {
+      font-family: 'Bungee Shade', cursive;
+      font-size: clamp(60px, 12vw, 130px);
+      line-height: 0.95;
+      margin: 0;
+      color: var(--ink);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+    h1 .ballers { color: var(--pop1); display: inline-block; transform: rotate(-2deg); }
+
+    .tagline {
+      max-width: 600px;
+      font-size: 17px;
+      line-height: 1.5;
+      color: #36302a;
+      background: white;
+      padding: 12px 16px;
+      border: 2px solid var(--ink);
+      box-shadow: 6px 6px 0 var(--ink);
+      transform: rotate(0.4deg);
+      margin: 28px 0 40px;
+    }
+
+    form {
+      display: flex;
+      gap: 14px;
+      align-items: end;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    label {
+      font-family: 'Bungee', sans-serif;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      display: block;
+      margin-bottom: 8px;
+    }
+    input[type=date] {
+      font-family: 'Bungee', sans-serif;
+      font-size: 28px;
+      padding: 8px 12px;
+      background: white;
+      border: 2px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--ink);
+      color: var(--ink);
+    }
+    button {
+      font-family: 'Bungee', sans-serif;
+      font-size: 22px;
+      padding: 12px 22px;
+      background: var(--pop1);
+      color: white;
+      border: 2px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--ink);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    button:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 var(--ink); }
+
+    .album {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+    @media (max-width: 720px) { .album { grid-template-columns: 1fr; } }
+
+    .card {
+      background: white;
+      border: 3px solid var(--ink);
+      padding: 16px 18px;
+      box-shadow: 8px 8px 0 var(--ink);
+      position: relative;
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 14px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(10px) rotate(var(--tilt, 0deg));
+      animation: pop 420ms cubic-bezier(.2,.7,.3,1.4) forwards;
+    }
+    @keyframes pop { to { opacity: 1; transform: rotate(var(--tilt, 0deg)); } }
+
+    .card:nth-child(odd)  { --tilt: -0.8deg; }
+    .card:nth-child(even) { --tilt:  0.9deg; }
+    .card:nth-child(5n+1) { border-color: var(--pop1); --c: var(--pop1); }
+    .card:nth-child(5n+2) { border-color: var(--pop2); --c: var(--pop2); }
+    .card:nth-child(5n+3) { border-color: var(--pop3); --c: var(--pop3); }
+    .card:nth-child(5n+4) { border-color: var(--pop4); --c: var(--pop4); }
+    .card:nth-child(5n+5) { border-color: var(--pop5); --c: var(--pop5); }
+
+    .card .rank {
+      position: absolute;
+      top: -18px;
+      left: -18px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--c, var(--ink));
+      color: white;
+      font-family: 'Bungee', sans-serif;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .card .portrait {
+      width: 80px;
+      height: 100px;
+      background-color: var(--paper-deep);
+      background-size: cover;
+      background-position: center 22%;
+      background-repeat: no-repeat;
+      border: 2px solid var(--ink);
+      filter: contrast(1.06) saturate(1.1);
+    }
+
+    .card .name {
+      font-family: 'Bungee', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.005em;
+      line-height: 1.05;
+      margin: 0 0 6px;
+      text-transform: uppercase;
+    }
+    .card .name a { color: inherit; text-decoration: none; border-bottom: 2px solid var(--c, var(--ink)); }
+    .card .meta { font-size: 13px; color: #2a221a; line-height: 1.35; }
+    .card .meta strong { color: var(--ink); }
+    .stats {
+      grid-column: 1 / -1;
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 2px dotted var(--c, var(--ink));
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .stats .chip {
+      background: var(--c, var(--ink));
+      color: white;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    .stats .chip.ghost { background: transparent; color: var(--c, var(--ink)); border: 1.5px solid var(--c, var(--ink)); }
+
+    .skeleton { padding: 40px 0; text-align: center; font-family: 'Bungee', sans-serif; }
+
+    .back {
+      display: inline-block;
+      margin-top: 48px;
+      font-size: 14px;
+      color: #2a221a;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Bday <span class="ballers">Ballers</span></h1>
+    <p class="tagline">Clapped-out? Cooked? Finished at the top level?<br>Turns out he's the same age as you.</p>
+
+    <form id="f">
+      <div>
+        <label for="dob">Your DOB</label>
+        <input type="date" id="dob" value="1991-07-02" required>
+      </div>
+      <button type="submit">Stick 'em up</button>
+    </form>
+
+    <section class="album" id="album"><p class="skeleton">Opening the packets…</p></section>
+
+    <a class="back" href="/designs/">← back to variants</a>
+  </main>
+
+  <script>
+    const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    function fmtDate(iso) { const [y,m,d] = iso.split('-'); return `${parseInt(d,10)} ${MONTHS[parseInt(m,10)-1]} ${y}`; }
+    function fmtMoney(v) { if (v == null) return null; if (v >= 1e6) return `€${(v/1e6).toFixed(v >= 1e7 ? 0 : 1)}m`; if (v >= 1e3) return `€${Math.round(v/1e3)}k`; return `€${v}`; }
+    function tag(n, attrs={}, ...kids) { const e = document.createElement(n); for (const [k,v] of Object.entries(attrs)) { if (k==='class') e.className=v; else if (k==='style') e.style.cssText=v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v===true) e.setAttribute(k,''); else if (v!=null && v!==false) e.setAttribute(k, v); } for (const k of kids.flat()) { if (k==null || k===false) continue; e.append(k instanceof Node ? k : document.createTextNode(String(k))); } return e; }
+
+    const f = document.getElementById('f');
+    const dobEl = document.getElementById('dob');
+    const album = document.getElementById('album');
+
+    async function render(dob) {
+      album.innerHTML = '<p class="skeleton">Opening the packets…</p>';
+      const r = await fetch('/api/players?dob=' + dob + '&limit=10');
+      const json = await r.json();
+      const userDate = new Date(dob + 'T00:00:00Z');
+      album.innerHTML = '';
+      json.results.forEach((p, i) => {
+        const pd = new Date(p.date_of_birth + 'T00:00:00Z');
+        const signed = Math.round((pd - userDate) / 86_400_000);
+        const abs = Math.abs(signed);
+        const same = signed === 0;
+        const wordy = same ? 'same day!' : (signed > 0 ? `${abs}d younger` : `${abs}d older`);
+
+        const nationality = p.national_team || (p.nationality ? p.nationality.split(',')[0].trim() : null);
+        const daysText = same
+          ? 'Same day!'
+          : `${abs} days ${signed > 0 ? 'younger' : 'older'}`;
+
+        const stats = [];
+        stats.push(tag('span', {class:'chip'}, daysText));
+        if (nationality) stats.push(tag('span', {class:'chip ghost'}, nationality));
+        if (p.caps != null) stats.push(tag('span', {class:'chip ghost'}, `Intl ${p.caps}/${p.goals ?? 0}`));
+        if (p.foot) stats.push(tag('span', {class:'chip ghost'}, p.foot === 'both' ? 'Both feet' : `${p.foot} foot`));
+
+        const card = tag('article', { class: 'card', style: `animation-delay: ${i*70}ms` },
+          tag('div', {class:'rank'}, String(i+1).padStart(2,'0')),
+          tag('div', {class:'portrait', style: p.image_url ? `background-image: url("${p.image_url}")` : ''}),
+          tag('div', {},
+            tag('h2', {class:'name'}, p.profile_url ? tag('a', {href:p.profile_url, target:'_blank', rel:'noopener'}, p.name) : p.name),
+            tag('div', {class:'meta'},
+              fmtDate(p.date_of_birth), ' · ',
+              tag('strong', {}, p.current_club || '—'),
+              p.position ? ' · ' + p.position.split(' - ').pop() : ''
+            ),
+          ),
+          tag('div', {class:'stats'}, ...stats),
+        );
+        album.append(card);
+      });
+    }
+
+    f.addEventListener('submit', (e) => { e.preventDefault(); render(dobEl.value); });
+    render(dobEl.value);
+  </script>
+</body>
+</html>

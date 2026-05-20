@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bday Ballers — Broadcast</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090d;
+      --bg2: #0e131b;
+      --panel: #131a25;
+      --ink: #e8eef7;
+      --ink-soft: #8a96aa;
+      --accent: #4cf2c6;
+      --accent2: #ff2f7a;
+      --rule: rgba(232, 238, 247, 0.08);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: 'Saira Condensed', system-ui, sans-serif; }
+    body {
+      min-height: 100vh;
+      padding: 32px 24px 80px;
+      background:
+        radial-gradient(ellipse at 80% -10%, rgba(76, 242, 198, 0.12), transparent 50%),
+        radial-gradient(ellipse at 0% 100%, rgba(255, 47, 122, 0.10), transparent 50%),
+        var(--bg);
+    }
+    main { max-width: 980px; margin: 0 auto; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 22px;
+      margin-bottom: 36px;
+    }
+    h1 {
+      font-family: 'Saira Condensed', sans-serif;
+      font-weight: 900;
+      font-size: clamp(54px, 9vw, 96px);
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+      margin: 0;
+      text-transform: uppercase;
+    }
+    h1 .bday { color: var(--ink); }
+    h1 .ballers { color: var(--accent); }
+    .live {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .live::before {
+      content: "";
+      width: 8px; height: 8px;
+      background: var(--accent2);
+      border-radius: 50%;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+    .tagline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--ink-soft);
+      max-width: 640px;
+      margin: 0 0 32px;
+      padding: 14px 0;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    form { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; margin-bottom: 32px; }
+    label {
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--ink-soft);
+      display: block;
+      margin-bottom: 6px;
+    }
+    input[type=date] {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      color: var(--ink);
+      font-family: 'Saira Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 28px;
+      padding: 8px 14px;
+      letter-spacing: 0.02em;
+    }
+    input[type=date]::-webkit-calendar-picker-indicator {
+      filter: invert(0.9) hue-rotate(150deg) saturate(2);
+      cursor: pointer;
+    }
+    button {
+      background: var(--accent);
+      color: #00150f;
+      border: 0;
+      font-family: 'Saira Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 24px;
+      cursor: pointer;
+      clip-path: polygon(0 0, 100% 0, 96% 100%, 0 100%);
+      padding-right: 32px;
+    }
+    button:hover { background: #6cffd6; }
+
+    .feed > .row {
+      display: grid;
+      grid-template-columns: 64px 84px 1fr auto;
+      gap: 16px;
+      align-items: stretch;
+      padding: 0;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--panel) 0%, rgba(19,26,37,0.55) 100%);
+      border-left: 4px solid var(--accent);
+      overflow: hidden;
+      position: relative;
+      opacity: 0;
+      transform: translateX(-20px);
+      animation: slideIn 320ms cubic-bezier(.16,.84,.36,1) forwards;
+    }
+    .feed > .row.same { border-left-color: var(--accent2); }
+    @keyframes slideIn { to { opacity: 1; transform: none; } }
+
+    .rank {
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Saira Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 44px;
+      color: var(--ink);
+      background: rgba(255,255,255,0.02);
+      letter-spacing: -0.02em;
+    }
+    .row.same .rank { color: var(--accent2); }
+    .portrait {
+      background-color: #1a2230;
+      background-size: cover;
+      background-position: center 22%;
+      background-repeat: no-repeat;
+      filter: contrast(1.05) saturate(0.95);
+      min-height: 96px;
+    }
+    .body { padding: 12px 4px 12px 6px; min-width: 0; }
+    .name {
+      font-family: 'Saira Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      letter-spacing: 0.01em;
+      line-height: 1;
+      margin: 0 0 6px;
+      text-transform: uppercase;
+    }
+    .name a { color: var(--ink); text-decoration: none; }
+    .name a:hover { color: var(--accent); }
+    .meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .meta .club { color: var(--ink); }
+
+    .bars {
+      margin-top: 8px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .bar {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bar .v { color: var(--accent); font-weight: 600; }
+    .bar.peak .v { color: var(--accent2); }
+
+    .delta {
+      padding: 12px 18px;
+      background: rgba(0,0,0,0.25);
+      display: flex; flex-direction: column; align-items: end; justify-content: center;
+      min-width: 110px;
+      text-align: right;
+      border-left: 1px solid var(--rule);
+    }
+    .delta .n {
+      font-family: 'Saira Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 38px;
+      color: var(--ink);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+    }
+    .row.same .delta .n { color: var(--accent2); font-size: 22px; line-height: 1.2; }
+    .delta .lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+
+    .skeleton { padding: 30px; text-align: center; color: var(--ink-soft); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.16em; text-transform: uppercase; font-size: 12px; }
+
+    .back {
+      display: inline-block;
+      margin-top: 48px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      text-decoration: none;
+      border-bottom: 1px solid var(--rule);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="header">
+      <h1><span class="bday">Bday</span> <span class="ballers">Ballers</span></h1>
+      <span class="live">Live · TM data</span>
+    </div>
+    <p class="tagline">// Clapped-out? Cooked? Finished at the top level?<br>Turns out he's the same age as you.</p>
+
+    <form id="f">
+      <div>
+        <label for="dob">Date of birth</label>
+        <input type="date" id="dob" value="1991-07-02" required>
+      </div>
+      <button type="submit">Run feed ▸</button>
+    </form>
+
+    <section class="feed" id="feed"><p class="skeleton">Connecting…</p></section>
+
+    <a class="back" href="/designs/">← back to variants</a>
+  </main>
+
+  <script>
+    const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    function fmtDate(iso) { const [y,m,d] = iso.split('-'); return `${parseInt(d,10)} ${MONTHS[parseInt(m,10)-1]} ${y}`; }
+    function fmtMoney(v) { if (v == null) return '—'; if (v >= 1e6) return `€${(v/1e6).toFixed(v >= 1e7 ? 0 : 1)}m`; if (v >= 1e3) return `€${Math.round(v/1e3)}k`; return `€${v}`; }
+    function tag(n, attrs={}, ...kids) { const e = document.createElement(n); for (const [k,v] of Object.entries(attrs)) { if (k==='class') e.className=v; else if (k==='style') e.style.cssText=v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v===true) e.setAttribute(k,''); else if (v!=null && v!==false) e.setAttribute(k, v); } for (const k of kids.flat()) { if (k==null || k===false) continue; e.append(k instanceof Node ? k : document.createTextNode(String(k))); } return e; }
+
+    const f = document.getElementById('f');
+    const dobEl = document.getElementById('dob');
+    const feed = document.getElementById('feed');
+
+    async function render(dob) {
+      feed.innerHTML = '<p class="skeleton">Connecting…</p>';
+      const r = await fetch('/api/players?dob=' + dob + '&limit=10');
+      const json = await r.json();
+      const userDate = new Date(dob + 'T00:00:00Z');
+      feed.innerHTML = '';
+      json.results.forEach((p, i) => {
+        const pd = new Date(p.date_of_birth + 'T00:00:00Z');
+        const signed = Math.round((pd - userDate) / 86_400_000);
+        const abs = Math.abs(signed);
+        const same = signed === 0;
+
+        const metaBits = [
+          fmtDate(p.date_of_birth),
+          p.current_club ? tag('span', {class:'club'}, p.current_club) : null,
+          p.position ? p.position.split(' - ').pop() : null,
+          p.nationality ? p.nationality.split(',')[0].trim() : null,
+        ].filter(Boolean);
+
+        const bars = [];
+        if (p.peak_market_value_eur) bars.push(tag('span', {class:'bar peak'}, 'PEAK ', tag('span',{class:'v'}, fmtMoney(p.peak_market_value_eur))));
+        if (p.caps != null) bars.push(tag('span', {class:'bar'}, 'CAPS ', tag('span',{class:'v'}, String(p.caps)), ' · GLS ', tag('span',{class:'v'}, String(p.goals ?? 0))));
+        if (p.height_cm) bars.push(tag('span', {class:'bar'}, 'HT ', tag('span',{class:'v'}, p.height_cm + 'CM')));
+
+        const row = tag('article', { class: 'row' + (same ? ' same' : ''), style: `animation-delay: ${i*50}ms` },
+          tag('div', {class:'rank'}, String(i+1).padStart(2,'0')),
+          tag('div', {class:'portrait', style: p.image_url ? `background-image: url("${p.image_url}")` : ''}),
+          tag('div', {class:'body'},
+            tag('h2', {class:'name'}, p.profile_url ? tag('a', {href:p.profile_url, target:'_blank', rel:'noopener'}, p.name) : p.name),
+            tag('div', {class:'meta'}, ...metaBits.flatMap((b,i) => i===0 ? [b] : [b])),
+            bars.length ? tag('div', {class:'bars'}, ...bars) : null,
+          ),
+          tag('div', {class:'delta'},
+            same ? tag('span',{class:'n'},'SAME DAY') : tag('span',{class:'n'}, (signed>0?'+':'−') + abs),
+            same ? null : tag('span',{class:'lbl'}, signed>0 ? 'days younger' : 'days older'),
+          ),
+        );
+        feed.append(row);
+      });
+    }
+
+    f.addEventListener('submit', (e) => { e.preventDefault(); render(dobEl.value); });
+    render(dobEl.value);
+  </script>
+</body>
+</html>
