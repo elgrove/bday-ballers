@@ -1,20 +1,13 @@
 const form = document.getElementById('dob-form');
 const dobInput = document.getElementById('dob');
 const errorEl = document.getElementById('error');
-const resultsEl = document.getElementById('results');
+const albumEl = document.getElementById('album');
 
 const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
 function fmtDate(iso) {
   const [y, m, d] = iso.split('-');
   return `${parseInt(d, 10)} ${MONTHS[parseInt(m, 10) - 1]} ${y}`;
-}
-
-function fmtMoney(eur) {
-  if (eur == null) return null;
-  if (eur >= 1_000_000) return `€${(eur / 1_000_000).toFixed(eur >= 10_000_000 ? 0 : 1)}m peak`;
-  if (eur >= 1_000)     return `€${Math.round(eur / 1_000)}k peak`;
-  return `€${eur} peak`;
 }
 
 function tag(name, attrs = {}, ...kids) {
@@ -34,87 +27,62 @@ function tag(name, attrs = {}, ...kids) {
 }
 
 function render(dob, results) {
-  resultsEl.innerHTML = '';
+  albumEl.innerHTML = '';
   if (!results.length) {
-    resultsEl.append(tag('p', { class: 'skeleton' }, 'No players found near that date.'));
+    albumEl.append(tag('p', { class: 'skeleton' }, 'No players found near that date.'));
     return;
   }
-
-  resultsEl.append(
-    tag('div', { class: 'intro' },
-      tag('span', {}, 'Top ', tag('strong', {}, results.length), ' near ', tag('strong', {}, fmtDate(dob))),
-      tag('span', {}, 'Ranked by notability'),
-    ),
-  );
 
   const userDate = new Date(dob + 'T00:00:00Z');
 
   results.forEach((p, i) => {
     const playerDate = new Date(p.date_of_birth + 'T00:00:00Z');
-    const signedDays = Math.round((playerDate - userDate) / 86_400_000);
-    const absDays = Math.abs(signedDays);
-    const isSameDay = signedDays === 0;
-    const ageLabel = isSameDay
-      ? 'Same day'
-      : (signedDays > 0 ? 'younger' : 'older');
-    const ageWord = isSameDay
-      ? 'Same day'
-      : (absDays === 1 ? `Day ${ageLabel}` : `Days ${ageLabel}`);
+    const signed = Math.round((playerDate - userDate) / 86_400_000);
+    const abs = Math.abs(signed);
+    const same = signed === 0;
 
-    const meta = [];
-    if (p.national_team)  meta.push(p.national_team);
-    else if (p.nationality) meta.push(p.nationality.split(',')[0].trim());
-    if (p.current_club)    meta.push(tag('span', { class: 'club' }, p.current_club));
-    if (p.position)        meta.push(p.position.split(' - ').pop());
+    const nationality = p.national_team
+      || (p.nationality ? p.nationality.split(',')[0].trim() : null);
 
-    // Interleave with separators
-    const metaNodes = [];
-    meta.forEach((m, idx) => {
-      if (idx > 0) metaNodes.push(tag('span', { class: 'sep' }, '·'));
-      metaNodes.push(m);
+    const daysText = same
+      ? 'Same day!'
+      : `${abs} days ${signed > 0 ? 'younger' : 'older'}`;
+
+    const stats = [];
+    stats.push(tag('span', { class: 'chip' }, daysText));
+    if (nationality) stats.push(tag('span', { class: 'chip ghost' }, nationality));
+    if (p.caps != null) stats.push(tag('span', { class: 'chip ghost' }, `Intl ${p.caps}/${p.goals ?? 0}`));
+    if (p.foot) stats.push(tag('span', { class: 'chip ghost' }, p.foot === 'both' ? 'Both feet' : `${p.foot} foot`));
+
+    const portrait = tag('div', {
+      class: 'portrait',
+      style: p.image_url ? `background-image: url("${p.image_url}")` : '',
     });
-
-    const badges = [];
-    if (p.peak_market_value_eur)
-      badges.push(tag('span', { class: 'badge peak' }, fmtMoney(p.peak_market_value_eur)));
-    if (p.caps != null)
-      badges.push(tag('span', { class: 'badge' }, `${p.caps} caps · ${p.goals ?? 0} gls`));
-    if (p.height_cm)
-      badges.push(tag('span', { class: 'badge' }, `${p.height_cm} cm`));
-
-    const portrait = p.image_url
-      ? tag('div', { class: 'portrait', style: `background-image: url("${p.image_url}")` })
-      : tag('div', { class: 'portrait' });
 
     const nameNode = p.profile_url
       ? tag('a', { href: p.profile_url, target: '_blank', rel: 'noopener' }, p.name)
       : p.name;
 
-    const card = tag('article',
-      { class: 'card' + (isSameDay ? ' is-same-day' : ''), style: `animation-delay: ${i * 60}ms` },
-      tag('div', { class: 'rank' }, String(i + 1).padStart(2, '0')),
+    const card = tag('article', { class: 'card', style: `animation-delay: ${i * 70}ms` },
       portrait,
-      tag('div', { class: 'body' },
+      tag('div', {},
         tag('h2', { class: 'name' }, nameNode),
-        tag('p', { class: 'meta' }, fmtDate(p.date_of_birth), tag('span', { class: 'sep' }, '·'), ...metaNodes),
-        badges.length ? tag('div', { class: 'badges' }, ...badges) : null,
+        tag('div', { class: 'meta' },
+          fmtDate(p.date_of_birth), ' · ',
+          tag('strong', {}, p.current_club || '—'),
+          p.position ? ' · ' + p.position.split(' - ').pop() : ''
+        ),
       ),
-      tag('div', { class: 'days-off' },
-        isSameDay
-          ? null
-          : tag('span', { class: 'n' }, String(absDays)),
-        tag('span', { class: 'label' + (isSameDay ? ' is-same' : '') }, ageWord),
-      ),
+      tag('div', { class: 'stats' }, ...stats),
     );
 
-    resultsEl.append(card);
+    albumEl.append(card);
   });
 }
 
 async function search(dob) {
   errorEl.hidden = true;
-  resultsEl.innerHTML = '';
-  resultsEl.append(tag('p', { class: 'skeleton' }, 'Looking…'));
+  albumEl.innerHTML = '<p class="skeleton">Opening the packets…</p>';
 
   try {
     const r = await fetch(`/api/players?dob=${encodeURIComponent(dob)}&limit=10`);
@@ -125,12 +93,11 @@ async function search(dob) {
     const json = await r.json();
     render(dob, json.results);
 
-    // Update URL without reload so the result is shareable
     const url = new URL(window.location);
     url.searchParams.set('dob', dob);
     history.replaceState(null, '', url);
   } catch (err) {
-    resultsEl.innerHTML = '';
+    albumEl.innerHTML = '';
     errorEl.textContent = err.message;
     errorEl.hidden = false;
   }
@@ -138,14 +105,10 @@ async function search(dob) {
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  const dob = dobInput.value;
-  if (!dob) return;
-  search(dob);
+  if (dobInput.value) search(dobInput.value);
 });
 
-// Prefill from URL or default to a sensible date
+// Prefill from URL or use the default already on the input
 const initial = new URL(window.location).searchParams.get('dob');
-if (initial) {
-  dobInput.value = initial;
-  search(initial);
-}
+if (initial) dobInput.value = initial;
+search(dobInput.value);

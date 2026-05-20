@@ -3,39 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bday Ballers — Footballers born when you were</title>
+  <title>Bday Ballers — Footballers your age</title>
   <meta name="description" content="Enter your date of birth and find the footballers born closest to you.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <main>
     <header class="masthead">
-      <h1>
-        <span class="word word-1">Bday</span>
-        <span class="word word-2">Ballers</span>
-      </h1>
-      <p class="tagline">Footballers born when you were.</p>
+      <h1>Bday <span class="ballers">Ballers</span></h1>
+      <p class="tagline">Clapped-out? Cooked? Finished at the top level? Turns out he's the same age as you.</p>
     </header>
 
-    <section class="prompt">
-      <form id="dob-form">
-        <label for="dob">Enter your date of birth</label>
-        <div class="row">
-          <input type="date" id="dob" name="dob" required min="1900-01-01" max="2025-12-31">
-          <button type="submit">Find&nbsp;them<span class="arrow">→</span></button>
-        </div>
-        <p class="error" id="error" hidden></p>
-      </form>
-    </section>
+    <form id="dob-form">
+      <div>
+        <label for="dob">Your DOB</label>
+        <input type="date" id="dob" name="dob" value="1991-07-02" required min="1900-01-01" max="2025-12-31">
+      </div>
+      <button type="submit">Search</button>
+      <p class="error" id="error" hidden></p>
+    </form>
 
-    <section class="results" id="results" aria-live="polite"></section>
-
-    <footer>
-      <p>Data: Transfermarkt · Cohort: top-flight footballers worldwide 2000–2024</p>
-    </footer>
+    <section class="album" id="album" aria-live="polite"></section>
   </main>
 
   <script src="/app.js" defer></script>
