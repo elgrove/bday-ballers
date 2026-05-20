@@ -1,0 +1,23 @@
+# Scraper artefacts
+scraper/cache/
+scraper/data/
+scraper/.venv/
+scraper/__pycache__/
+*.pyc
+
+# DB binary — regenerable from scraper/data/players.jsonl via load.py
+db/*.db
+db/*.db.prev
+db/*.db-wal
+db/*.db-shm
+
+# Built Go binary
+api/bday-ballers
+
+# Editor / OS
+.DS_Store
+*.swp
+
+# Personal notes
+idea.md
+notes.md
